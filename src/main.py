@@ -1,6 +1,6 @@
 import numpy as np
 from src.database import StatMetricDB
-from src.stats_engine import calculate_ab_test
+from src.stats_engine import calculate_ab_test_advanced
 
 
 def run_pipeline():
@@ -16,11 +16,12 @@ def run_pipeline():
     group_b = np.random.normal(loc=53, scale=5, size=100)
 
     # 3. Perform calculations
-    p_val, lift = calculate_ab_test(group_a, group_b)
+    p_val, lift, t_type = calculate_ab_test_advanced(group_a, group_b)
 
+    print(f"🧬 Использован метод: {t_type}")
     # 4. Add the result to the database
     test_name = "DeepWatch_V1_vs_V2_Comparison"
-    db.log_experiment(test_name, p_val, lift)
+    db.log_experiment(test_name, p_val, lift, t_type)
 
     # 5. Put the summary in the console
     print(f"📊 Тест: {test_name}")
