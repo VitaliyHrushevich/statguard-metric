@@ -1,4 +1,4 @@
-# 🛰️ StatGuard-Metric: Adaptive ML Experimentation Framework
+# 📈 StatGuard-Metric: Adaptive ML Experimentation Framework
 
 ![Python 3.11](https://img.shields.io)
 ![SciPy](https://img.shields.io)
