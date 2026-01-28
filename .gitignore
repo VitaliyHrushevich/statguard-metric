@@ -205,3 +205,18 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Python environment
+.venv/
+*.py[cod]
+
+# DATA (Самое важное!)
+data/*.db
+data/*.sqlite
+data/experiments.db
+
+# Reports & Screenshots
+reports/*.png
+
+# System files
+.DS_Store
