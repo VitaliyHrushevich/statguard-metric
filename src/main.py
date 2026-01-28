@@ -1,37 +1,42 @@
+import sys
 import numpy as np
+from pathlib import Path
+
+# Добавляем src в пути
+BASE_DIR = Path(__file__).resolve().parent
+sys.path.append(str(BASE_DIR))
+
 from src.database import StatMetricDB
-from src.stats_engine import calculate_ab_test_advanced
+from src.stats_engine import StatAuditor
 
 
 def run_pipeline():
-    # 1. Initialize database
     db = StatMetricDB()
+    auditor = StatAuditor()
 
-    print("🚀 Запуск эксперимента в StatGuard-Metric...")
+    print("🚀 [StatGuard] Starting adaptive A/B analysis...")
 
-    # 2. Data Simulation
-    # А: The Old model (mean 50, spread 5)
-    # Б: The new model (mean 53, spread 5)
+    # Data Simulation (Baseline vs Challenger)
     group_a = np.random.normal(loc=50, scale=5, size=100)
     group_b = np.random.normal(loc=53, scale=5, size=100)
 
-    # 3. Perform calculations
-    p_val, lift, t_type = calculate_ab_test_advanced(group_a, group_b)
+    # Adaptive Testing
+    p_val, lift, t_type = auditor.run_analysis(group_a, group_b)
 
-    print(f"🧬 Использован метод: {t_type}")
-    # 4. Add the result to the database
+    # Logging to SQLite
     test_name = "DeepWatch_V1_vs_V2_Comparison"
     db.log_experiment(test_name, p_val, lift, t_type)
 
-    # 5. Put the summary in the console
-    print(f"📊 Тест: {test_name}")
-    print(f"📈 Прирост (Lift): {lift:.2f}%")
-    print(f"🧬 P-Value: {p_val:.4f}")
+    print(f"\n" + "=" * 40)
+    print(f"📊 TEST: {test_name}")
+    print(f"📈 LIFT: {lift:.2f}%")
+    print(f"🧬 P-VALUE: {p_val:.4f} ({t_type})")
 
     if p_val < 0.05:
-        print("✅ Вердикт: Разница значима. Деплоим!")
+        print("✅ VERDICT: STATISTICALLY SIGNIFICANT. DEPLOY!")
     else:
-        print("❌ Вердикт: Разница случайна. Дорабатываем.")
+        print("❌ VERDICT: INSIGNIFICANT. KEEP REFINING.")
+    print("=" * 40)
 
 
 if __name__ == "__main__":
